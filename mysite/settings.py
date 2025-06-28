@@ -1,5 +1,11 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+from decouple import config
+from dj_database_url import parse as db_url
+
+# Cargamos el archivo .env
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -7,10 +13,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-nm8-57^=7glffkmg-i(ri5gbxm$$cu%#4q*pt_a^_^p!o3#!iw'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# Traemos el valor de DEBUG desde el .env
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['137.184.217.92', 'localhost', 'lohacemoscondjango.online', 'www.lohacemoscondjango.online' ]
+ALLOWED_HOSTS = ['137.184.217.92', 'localhost', 'lohacemoscondjango.online', 'www.lohacemoscondjango.online', '127.0.0.1' ]
 
 # Application definition
 
@@ -54,7 +60,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
+# Configuramos la base de datos:
 
+DATABASES = {
+    'default': {
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.sqlite3'),  # Default SQLite
+        'NAME': os.getenv('DB_NAME', str(BASE_DIR / 'db.sqlite3')),      # Default db.sqlite3
+        'USER': os.getenv('DB_USER', ''),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', ''),
+    }
+}
+
+
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -65,6 +85,7 @@ DATABASES = {
         'PORT': '',
     }
 }
+'''
 
 
 # Password validation
