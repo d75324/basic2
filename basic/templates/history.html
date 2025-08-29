@@ -1,0 +1,57 @@
+<div style="border: 1px solid #ccc; padding: 30px;">
+    <div>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Historial de Registros</title> <p><a href="{% url 'home' %}">back home</a></p>
+            <style>
+                body { font-family: sans-serif; margin: 2rem; }
+                h1 { color: #333; }
+                .registro-box {
+                    border: 1px solid #ddd;
+                    padding: 15px;
+                    margin-bottom: 20px;
+                    border-radius: 8px;
+                    background-color: #f9f9f9;
+                }
+                .registro-box .info-row {
+                    display: flex; /* Habilitamos Flexbox para alinear elementos en la misma línea */
+                    flex-wrap: wrap; /* Permite que los elementos pasen a la siguiente línea si no hay espacio */
+                    gap: 15px; /* Espacio entre los elementos */
+                    margin-bottom: 10px;
+                }
+                .registro-box p {
+                    margin: 0; /* Eliminamos el margen para un mejor control del espaciado */
+                    color: #555;
+                }
+                .registro-box strong {
+                    color: #222;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Historial de Registros</h1><hr>
+            
+            {% if registros %}
+                {% for registro in registros %}
+                    <div class="registro-box">
+                        <div class="info-row">
+                            <p><strong>Nombre:</strong> {{ registro.name }}</p>
+                            <p><strong>Email:</strong> {{ registro.email }}</p>
+                            <p><strong>Color Favorito:</strong> {{ registro.color }}</p>
+                            <p><strong>Fruta Favorita:</strong> {{ registro.fruit }}</p>
+                        </div>
+                        <p><strong>Mensaje:</strong> {{ registro.message }}</p>
+                        <p><small>Registrado el: {{ registro.created_at }}</small></p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No hay registros guardados.</p>
+            {% endif %}
+
+        </body>
+        </html>
+    </div>
+</div>

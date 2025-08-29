@@ -30,6 +30,23 @@
             position: relative;
             min-height: 100vh; /* Hacer que el contenedor ocupe al menos el 100% de la altura de la pantalla */
         }
+
+        /* Estilo para el botón de registro */
+        .btn-registro {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+            padding: 10px 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-registro:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -38,6 +55,12 @@
         <div class="row">
             <div class="col-12">
                 <h1 class="text-center mt-25vh h1-gris-oscuro">todo comienza aquí, aquí mismo.</h1>
+                
+                <!-- Botón de Registro centrado debajo del mensaje -->
+                <div class="text-center mt-4">
+                    <a href="{% url 'history' %}" class="btn btn-registro">si</a>
+                </div>
+                
                 <!-- Colocar el p en la parte inferior derecha -->
                 <!-- <p class="position-bottom-right">
                     <a href="mailto:websegura.co@gmail.com" class="enlace-email">lo hacemos con django</a>
