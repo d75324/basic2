@@ -43,8 +43,8 @@
                             <p><strong>Color Favorito:</strong> {{ registro.color }}</p>
                             <p><strong>Fruta Favorita:</strong> {{ registro.fruit }}</p>
                         </div>
-                        <p><strong>Mensaje:</strong> {{ registro.message }}</p>
-                        <p><small>Registrado el: {{ registro.created_at }}</small></p>
+                        <p style="margin-bottom: 5px;"><strong>Mensaje:</strong> {{ registro.message }}</p>
+                        <p><i><small>Registrado el: {{ registro.created_at }}</small></i></p>
                     </div>
                 {% endfor %}
             {% else %}
