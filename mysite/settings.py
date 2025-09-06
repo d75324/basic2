@@ -107,5 +107,5 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:8080",
     "https://lohacemoscondjango.online",
-    "https://68b4f8825e8b7949f7af7afc--lhcdj.netlify.app", # Netlify URL
+    "https://lhcdj2.netlify.app/", # Netlify URL
 ]
