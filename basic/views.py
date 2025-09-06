@@ -35,7 +35,7 @@ class HistoryView(ListView):
 
 # vista para procesar los POST de la SPA
 @csrf_exempt  
-@require_http_methods(["POST", "OPTIONS"])  # Acepta POST y OPTIONS
+#@require_http_methods(["POST", "OPTIONS"])  # Acepta POST y OPTIONS
 def api_projects(request):
     # preflight OPTIONS para CORS
     if request.method == "OPTIONS":
