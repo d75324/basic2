@@ -2,11 +2,12 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 # requerido para procesar los POST de la SPA
+from django.utils.decorators import method_decorator
+from django.views import View
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
-from .models import Registro
 
 # pagina de inicio
 class HomeView(TemplateView):
@@ -32,21 +33,20 @@ class HistoryView(ListView):
     ordering = ['-created_at']  # el orden
 
 
-
 # vista para procesar los POST de la SPA
-@csrf_exempt  
-#@require_http_methods(["POST", "OPTIONS"])  # Acepta POST y OPTIONS
-def api_projects(request):
-    # preflight OPTIONS para CORS
-    if request.method == "OPTIONS":
+@method_decorator(csrf_exempt, name='dispatch')
+@method_decorator(require_http_methods(["POST", "OPTIONS"]), name='dispatch')
+class ApiProjectsView(View):
+    # Maneja las solicitudes OPTIONS para CORS
+    def options(self, request, *args, **kwargs):
         response = JsonResponse({"status": "ok"})
         response["Access-Control-Allow-Origin"] = "*"
         response["Access-Control-Allow-Methods"] = "POST, OPTIONS"
         response["Access-Control-Allow-Headers"] = "Content-Type"
         return response
     
-    # POST request
-    if request.method == "POST":
+    # maneja las solicitudes POST
+    def post(self, request, *args, **kwargs):
         try:
             # Decodificar JSON
             data = json.loads(request.body)
@@ -89,5 +89,4 @@ def api_projects(request):
             return JsonResponse({'error': 'JSON inválido'}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
-
 
