@@ -15,7 +15,7 @@ urlpatterns = [
     #path('api/api.projects/', views.api_projects, name='api_projects'),
     path('api/', include(router.urls)),  # aca se incluyen las URLs de la API
     path('history/', HistoryView.as_view(), name='history'), 
-    path('api/projects/', ApiProjectsView.as_view(), name='api-projects'),
+    path('api/api.projects/', ApiProjectsView.as_view(), name='api-projects'),
 ]
 
 

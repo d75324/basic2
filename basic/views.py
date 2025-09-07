@@ -3,7 +3,10 @@ from django.views.generic import TemplateView
 
 # requerido para procesar los POST de la SPA
 from django.utils.decorators import method_decorator
-from django.views import View
+#from django.views import APIView
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -36,31 +39,36 @@ class HistoryView(ListView):
 # vista para procesar los POST de la SPA
 @method_decorator(csrf_exempt, name='dispatch')
 @method_decorator(require_http_methods(["POST", "OPTIONS"]), name='dispatch')
-class ApiProjectsView(View):
+class ApiProjectsView(APIView):
     # Maneja las solicitudes OPTIONS para CORS
     def options(self, request, *args, **kwargs):
-        response = JsonResponse({"status": "ok"})
+        response = Response({"status": "ok"})
         response["Access-Control-Allow-Origin"] = "*"
         response["Access-Control-Allow-Methods"] = "POST, OPTIONS"
         response["Access-Control-Allow-Headers"] = "Content-Type"
         return response
     
-    # maneja las solicitudes POST
+    # Maneja las solicitudes POST
     def post(self, request, *args, **kwargs):
         try:
-            # Decodificar JSON
-            data = json.loads(request.body)
+            # En DRF usamos request.data para ver la data que está llegando
+            data = request.data
             
             # Debug: ver qué está llegando
             print("Datos recibidos:", data)
+            print("=== DEBUG URL ===")
+            print("URL completa:", request.build_absolute_uri())
+            print("Path:", request.path)
+            print("Método:", request.method)
+            print("=== FIN DEBUG URL ===")
             
             # Validar campos requeridos
             required_fields = ['name', 'email', 'color', 'fruit', 'message']
             for field in required_fields:
                 if field not in data:
-                    return JsonResponse({
+                    return Response({
                         'error': f'Campo faltante: {field}'
-                    }, status=400)
+                    }, status=status.HTTP_400_BAD_REQUEST)
             
             # Crear nuevo registro
             registro = Registro.objects.create(
@@ -72,7 +80,7 @@ class ApiProjectsView(View):
             )
             
             # Respuesta de éxito
-            return JsonResponse({
+            return Response({
                 'status': 'success',
                 'message': 'Registro creado correctamente',
                 'id': registro.id,
@@ -83,10 +91,9 @@ class ApiProjectsView(View):
                     'fruit': registro.fruit,
                     'message': registro.message
                 }
-            }, status=201)
+            }, status=status.HTTP_201_CREATED)
             
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'JSON inválido'}, status=400)
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+            return Response({'error': str(e)}, 
+                          status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
