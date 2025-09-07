@@ -47,13 +47,13 @@ class ApiProjectsView(APIView):
         response["Access-Control-Allow-Methods"] = "POST, OPTIONS"
         response["Access-Control-Allow-Headers"] = "Content-Type"
         return response
-    
+
     # Maneja las solicitudes POST
     def post(self, request, *args, **kwargs):
         try:
             # En DRF usamos request.data para ver la data que está llegando
             data = request.data
-            
+
             # Debug: ver qué está llegando
             print("Datos recibidos:", data)
             print("=== DEBUG URL ===")
@@ -61,15 +61,23 @@ class ApiProjectsView(APIView):
             print("Path:", request.path)
             print("Método:", request.method)
             print("=== FIN DEBUG URL ===")
-            
+
+            print("=== DEBUG HEADERS ===")
+            for header, value in request.headers.items():
+                print(f"{header}: {value}")
+            print("=== FIN DEBUG HEADERS ===")
+
             # Validar campos requeridos
             required_fields = ['name', 'email', 'color', 'fruit', 'message']
             for field in required_fields:
                 if field not in data:
-                    return Response({
+                    error_response = Response({
                         'error': f'Campo faltante: {field}'
                     }, status=status.HTTP_400_BAD_REQUEST)
-            
+                    # Headers de CORS para manejar errores
+                    error_response["Access-Control-Allow-Origin"] = "*"
+                    return error_response
+
             # Crear nuevo registro
             registro = Registro.objects.create(
                 name=data['name'],
@@ -78,9 +86,9 @@ class ApiProjectsView(APIView):
                 fruit=data['fruit'],
                 message=data['message']
             )
-            
-            # Respuesta de éxito
-            return Response({
+
+            # Respuesta de éxito CON HEADERS CORS
+            response = Response({
                 'status': 'success',
                 'message': 'Registro creado correctamente',
                 'id': registro.id,
@@ -93,7 +101,16 @@ class ApiProjectsView(APIView):
                 }
             }, status=status.HTTP_201_CREATED)
             
-        except Exception as e:
-            return Response({'error': str(e)}, 
-                          status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # headers CORS criticos para POST
+            response["Access-Control-Allow-Origin"] = "*"
+            response["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+            response["Access-Control-Allow-Headers"] = "Content-Type"
+            
+            return response
 
+        except Exception as e:
+            error_response = Response({'error': str(e)},
+                          status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # headers CORS para errores
+            error_response["Access-Control-Allow-Origin"] = "*"
+            return error_response 
